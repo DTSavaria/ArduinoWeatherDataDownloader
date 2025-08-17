@@ -1,0 +1,13 @@
+# Datatypes (KEYWORD1)
+NwsWeatherData KEYWORD1
+TemperatureUnit KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+hasValidData KEYWORD2
+getLastDownloadTime KEYWORD2
+getTemperatureUnit KEYWORD2
+getStationTemperature KEYWORD2
+getObservationTime KEYWORD2
+getTodaysHighTemperature KEYWORD2
+getTonightsLowTemperature KEYWORD2
+downloadNewData KEYWORD2
