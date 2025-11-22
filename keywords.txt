@@ -10,4 +10,9 @@ getStationTemperature KEYWORD2
 getObservationTime KEYWORD2
 getTodaysHighTemperature KEYWORD2
 getTonightsLowTemperature KEYWORD2
+getHazardCount KEYWORD2
+getHazard KEYWORD2
+getCurrentPeriodName KEYWORD2
+getCurrentPeriodWeather KEYWORD2
 downloadNewData KEYWORD2
+convertTemperature KEYWORD2

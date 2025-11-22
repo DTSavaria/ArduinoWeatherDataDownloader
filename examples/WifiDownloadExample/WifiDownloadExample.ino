@@ -1,26 +1,31 @@
 /*
- * ArduinoWeatherDataDownloader DownloadExample
- * Copyright (c) 2025 Daniel Savaria
- * Demonstrate downloading weather data over wifi.
- * 1. Open the Serial monitor and set to 9600
- * 2. See the CUSTOMIZE options below, especially the wifi settings
- * 3. Upload the example sketch to your Arduino
+    ArduinoWeatherDataDownloader WifiDownloadExample
+    Copyright (c) 2025 Daniel Savaria
+    https://github.com/DTSavaria/ArduinoWeatherDataDownloader
+    
+    Demonstrate downloading weather data over wifi.
+    1. Open the Serial monitor and set to 9600
+    2. See the CUSTOMIZE options below, especially the wifi settings
+    3. Upload the example sketch to your Arduino
  */
 
 #include <WiFiS3.h>
 #include <NwsWeatherData.hpp>
 
-#include "arudino_secrets.h"
-
 ////// vv CUSTOMIZE OPTIONS vv //////
 
-// first set the your location as decimal degree Strings
-String lat = "41.8292";
-String lon = "-71.4132";
+// 1.  Open this file and set your wifi network name and password
+#include "arduino_secrets.h"
+const String WIFI_SSID = SECRET_SSID;
+const String WIFI_PASS = SECRET_PASS;
 
-// then set your wifi network and password in arduino_secrets.h
-String ssid = SECRET_SSID;
-String pass = SECRET_PASS;
+/*
+    2. Set the your location as latitude and longitude. You can look it up on
+    a map. Use decimal degrees. Don't use minutes and seconds. Don't use
+    N/S/E/W. Instead N and W should be positive and S and E should be negative.
+*/
+const String LAT = "41.8292";
+const String LON = "-71.4132";
 
 ////// ^^ CUSTOMIZE OPTIONS ^^ //////
 
@@ -39,7 +44,7 @@ void setup() {
   connectToWifi();
 
   // create a data downloader
-  weatherData = new NwsWeatherData(wifi, lat, lon);
+  weatherData = new NwsWeatherData(wifi, LAT, LON);
 
   // grab the data
   Serial.println("Downloading new data");
@@ -51,6 +56,19 @@ void setup() {
     while (true)
       ;
   }
+
+  // start with hazards (watches and warnings)
+  size_t hazardCount = weatherData->getHazardCount();
+
+  for (size_t i = 0; i < hazardCount; i++) {
+    Serial.print("Alert ");
+    Serial.print(i + 1);
+    Serial.print(": ");
+    Serial.println(weatherData->getHazard(i));
+  }
+
+  Serial.println(weatherData->getCurrentPeriodName()
+                 + ": " + weatherData->getCurrentPeriodWeather());
 
   // print the temperatures
   Serial.print("Recorded temperature: ");
@@ -90,14 +108,31 @@ void connectToWifi() {
     Serial.println("Please upgrade the wifi firmware");
   }
 
+  if (WIFI_SSID.length() == 0) {
+    Serial.println("Enter your WiFi network and password in arduino_secrets.h and try again");
+
+    // don't continue
+    while (true)
+      ;
+  }
+
   int status = WL_IDLE_STATUS;
   while (status != WL_CONNECTED) {
-    Serial.println("Attempting to connect to: " + ssid);
-    status = WiFi.begin(ssid.c_str(), pass.c_str());
+    Serial.println("Attempting to connect to: " + WIFI_SSID);
+
+    status = WiFi.begin(WIFI_SSID.c_str(), WIFI_PASS.c_str());
+    Serial.print("Status code: ");
+    Serial.println(status);
+
+    if (status == WL_CONNECT_FAILED) {
+      while (true) {
+        Serial.println("WiFi connection failed. Check SSID/password");
+      }
+    }
+
     if (WiFi.localIP() == "0.0.0.0") {
       status = WL_IDLE_STATUS;
     }
-    delay(100);
   }
 
   Serial.print("Connected to: ");
