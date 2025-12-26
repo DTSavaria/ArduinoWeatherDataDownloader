@@ -14,5 +14,6 @@ getHazardCount KEYWORD2
 getHazard KEYWORD2
 getCurrentPeriodName KEYWORD2
 getCurrentPeriodWeather KEYWORD2
+getWeatherImageFileName KEYWORD2
 downloadNewData KEYWORD2
 convertTemperature KEYWORD2

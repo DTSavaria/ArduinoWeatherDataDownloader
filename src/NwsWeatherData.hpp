@@ -116,13 +116,18 @@ public:
   */
   String getCurrentPeriodWeather() const;
 
+  /*
+      Get the current observation weather image file name.
+  */
+  String getWeatherImageFileName() const;
+
 
   /*
       Try to download new data from the server
   */
   void downloadNewData();
 
-  static int convertTemperature(
+  static double convertTemperature(
     double temperature,
     TemperatureUnit inUnit,
     TemperatureUnit outUnit);

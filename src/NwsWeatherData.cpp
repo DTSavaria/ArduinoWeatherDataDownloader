@@ -26,6 +26,7 @@ NwsWeatherData::NwsWeatherData(
   JsonObject filterCurrentObservation = filter["currentobservation"].to<JsonObject>();
   filterCurrentObservation["Temp"] = true;
   filterCurrentObservation["Date"] = true;
+  filterCurrentObservation["Weatherimage"] = true;
 
   JsonObject filterTime = filter["time"].to<JsonObject>();
   filterTime["startPeriodName"] = true;
@@ -58,16 +59,16 @@ void NwsWeatherData::downloadNewData() {
   httpClient.stop();
 }
 
-int NwsWeatherData::convertTemperature(
+double NwsWeatherData::convertTemperature(
   double temperature,
   TemperatureUnit inUnit,
   TemperatureUnit outUnit) {
   if (inUnit == outUnit) {
     return temperature;
   } else if (inUnit == TemperatureUnit::FAHRENHEIT) {
-    return (temperature - 32) / 1.8 + 0.5;
+    return (temperature - 32) / 1.8;
   } else {
-    return temperature * 1.8 + 32 + 0.5;
+    return temperature * 1.8 + 32;
   }
 }
 
@@ -178,4 +179,8 @@ String NwsWeatherData::getCurrentPeriodName() const {
 
 String NwsWeatherData::getCurrentPeriodWeather() const {
   return weatherObject["data"]["weather"][0];
+}
+
+String NwsWeatherData::getWeatherImageFileName() const {
+  return weatherObject["currentobservation"]["Weatherimage"];
 }
